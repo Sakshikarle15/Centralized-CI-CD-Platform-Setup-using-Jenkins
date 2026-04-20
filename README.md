@@ -16,12 +16,40 @@ In many organizations:
 Build a centralized Jenkins platform where multiple applications use reusable pipeline logic
 
 ## Architecture :
-       Developer → GitHub → Webhook → Jenkins
-                          ↓
-                  Shared Library
-                          ↓
-         Build → Test → Scan → Deploy
 
+    ┌─────────────────────────────────────────────────────────────┐
+    │                     GitHub Repositories                      │
+    │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐      │
+    │  │ Shared Lib   │  │ Node.js App  │  │ Python App   │      │
+    │  └──────────────┘  └──────────────┘  └──────────────┘      │
+    └─────────────────────────────────────────────────────────────┘
+                                │
+                                ▼
+    ┌─────────────────────────────────────────────────────────────┐
+    │                    Jenkins Master (EC2)                      │
+    │  ┌────────────────────────────────────────────────────┐     │
+    │  │  • Shared Library Configuration                    │     │
+    │  │  • Credential Management                           │     │
+    │  │  • Role-Based Access Control                       │     │
+    │  │  • Multi-Branch Pipeline Jobs                      │     │
+    │  └────────────────────────────────────────────────────┘     │
+    └─────────────────────────────────────────────────────────────┘
+                                │
+                                ▼
+    ┌─────────────────────────────────────────────────────────────┐
+    │                    Jenkins Agents                            │
+    │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐      │
+    │  │ Static Agent │  │ Dynamic Agent│  │ Docker Agent │      │
+    │  └──────────────┘  └──────────────┘  └──────────────┘      │
+    └─────────────────────────────────────────────────────────────┘
+                                │
+                                ▼
+    ┌─────────────────────────────────────────────────────────────┐
+    │                  Standardized Pipeline Stages                │
+    │     Build  →  Test  →  Security Scan  →  Deploy             │
+    └─────────────────────────────────────────────────────────────┘
+    
+                                 
 ## Key Features
 
 ### 1. Centralized Jenkins Infrastructure
